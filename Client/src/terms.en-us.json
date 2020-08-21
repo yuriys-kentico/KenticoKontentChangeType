@@ -1,0 +1,26 @@
+{
+  "errors": {
+    "genericError": "A generic error has occurred.",
+    "genericStack": "No error information."
+  },
+  "element": {
+    "title": "Change Type",
+    "enabledDescription": "Choose type mappings and click the button to change the type of this item.",
+    "chooseType": "Choose target type...",
+    "chooseElement": "Choose source element...",
+    "elementName": "Target element name",
+    "elementType": "Target element type",
+    "elementSource": "Source element",
+    "button": "Change Type",
+    "totalTime": "Total time",
+    "totalApiCalls": "Total API calls",
+    "newItem": "New item",
+    "updatedItems": "Updated items",
+    "time": {
+      "hours": "hours",
+      "minutes": "minutes",
+      "seconds": "seconds"
+    },
+    "disabledDescription": "This element has no functionality in this context."
+  }
+}
