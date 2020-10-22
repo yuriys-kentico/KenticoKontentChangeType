@@ -82,8 +82,6 @@ export const ChangeType: FC = () => {
 
   const [error, setError] = useState<string>();
 
-  const elementRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (!available) {
       const initCustomElement = (element: ICustomElement<IChangeTypeConfig>, context: IContext) => {
@@ -104,10 +102,8 @@ export const ChangeType: FC = () => {
   }, [available]);
 
   useEffect(() => {
-    if (available && elementRef.current) {
-      let totalHeight = elementRef.current.scrollHeight;
-
-      CustomElement.setHeight(totalHeight);
+    if (available) {
+      CustomElement.setHeight(document.documentElement.scrollHeight);
     }
   });
 
@@ -203,142 +199,134 @@ export const ChangeType: FC = () => {
   return (
     <div>
       {loading && <Loading />}
-      {available && (
-        <div ref={elementRef}>
-          {error && <div>{error}</div>}
-          {error === undefined && enabled && currentType && otherTypes && (
-            <>
-              <div className={styles.row}>
-                <div className={styles.fullWidthCell}>
-                  <p>{elementTerms.enabledDescription}</p>
-                </div>
-                <div>
-                  <button
-                    className='btn btn--primary btn--xs'
-                    disabled={selectedType === undefined}
-                    onClick={changeType}
-                  >
-                    {elementTerms.button}
-                  </button>
-                </div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.fullWidthCell}>
-                  <select className={styles.select} value={typeId} onChange={(event) => setTypeId(event.target.value)}>
-                    <option value=''>{elementTerms.chooseType}</option>
-                    {otherTypes.map((otherType) => (
-                      <option key={otherType.id} value={otherType.id}>
-                        {otherType.name ?? otherType.codename}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.fullWidthCell}>
-                  {typeId !== '' && currentType && selectedType && (
-                    <>
-                      <div className={styles.row}>
-                        <div className={styles.fullWidthCell}>
-                          <b>{elementTerms.elementName}</b>
-                        </div>
-                        <div className={styles.fullWidthCell}>
-                          <b>{elementTerms.elementType}</b>
-                        </div>
-                        <div className={styles.fullWidthCell}>
-                          <b>{elementTerms.elementSource}</b>
-                        </div>
-                      </div>
-                      {selectedType.elements.map((element) => (
-                        <div key={element.id} className={styles.row}>
-                          <div className={styles.fullWidthCell}>{element.name ?? element.codename}</div>
-                          <div className={styles.fullWidthCell}>{element.type}</div>
-                          <div className={styles.fullWidthCell}>
-                            <select
-                              className={styles.select}
-                              value={elementMappings[element.id]}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                if (value !== '') {
-                                  elementMappings[element.id] = value;
-                                  setElementMappings({ ...elementMappings });
-                                } else {
-                                  delete elementMappings[element.id];
-                                  setElementMappings({ ...elementMappings });
-                                }
-                              }}
-                            >
-                              <option value=''>{elementTerms.chooseElement}</option>
-                              {currentType.elements
-                                .filter((currentElement) =>
-                                  typeMap[element.type as ElementType].some(
-                                    (allowedElementType) => allowedElementType === currentElement.type
-                                  )
-                                )
-                                .map((currentElement) => (
-                                  <option key={currentElement.id} value={currentElement.id}>
-                                    {`${currentElement.name ?? currentElement.codename} (${currentElement.type})`}
-                                  </option>
-                                ))}
-                            </select>
-                          </div>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </div>
-              </div>
-              {loaded && customElementContext && newItem && totalTime && (
+      {error && <div>{error}</div>}
+      {error === undefined && available && enabled && currentType && otherTypes && (
+        <>
+          <div className={styles.row}>
+            <div className={styles.fullWidthCell}>
+              <p>{elementTerms.enabledDescription}</p>
+            </div>
+            <div>
+              <button className='btn btn--primary btn--xs' disabled={selectedType === undefined} onClick={changeType}>
+                {elementTerms.button}
+              </button>
+            </div>
+          </div>
+          <div className={styles.row}>
+            <div className={styles.fullWidthCell}>
+              <select className={styles.select} value={typeId} onChange={(event) => setTypeId(event.target.value)}>
+                <option value=''>{elementTerms.chooseType}</option>
+                {otherTypes.map((otherType) => (
+                  <option key={otherType.id} value={otherType.id}>
+                    {otherType.name ?? otherType.codename}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className={styles.row}>
+            <div className={styles.fullWidthCell}>
+              {typeId !== '' && currentType && selectedType && (
                 <>
                   <div className={styles.row}>
                     <div className={styles.fullWidthCell}>
-                      <label className='content-item-element__label'>{elementTerms.newItem}</label>
-                      <p>
+                      <b>{elementTerms.elementName}</b>
+                    </div>
+                    <div className={styles.fullWidthCell}>
+                      <b>{elementTerms.elementType}</b>
+                    </div>
+                    <div className={styles.fullWidthCell}>
+                      <b>{elementTerms.elementSource}</b>
+                    </div>
+                  </div>
+                  {selectedType.elements.map((element) => (
+                    <div key={element.id} className={styles.row}>
+                      <div className={styles.fullWidthCell}>{element.name ?? element.codename}</div>
+                      <div className={styles.fullWidthCell}>{element.type}</div>
+                      <div className={styles.fullWidthCell}>
+                        <select
+                          className={styles.select}
+                          value={elementMappings[element.id]}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            if (value !== '') {
+                              elementMappings[element.id] = value;
+                              setElementMappings({ ...elementMappings });
+                            } else {
+                              delete elementMappings[element.id];
+                              setElementMappings({ ...elementMappings });
+                            }
+                          }}
+                        >
+                          <option value=''>{elementTerms.chooseElement}</option>
+                          {currentType.elements
+                            .filter((currentElement) =>
+                              typeMap[element.type as ElementType].some(
+                                (allowedElementType) => allowedElementType === currentElement.type
+                              )
+                            )
+                            .map((currentElement) => (
+                              <option key={currentElement.id} value={currentElement.id}>
+                                {`${currentElement.name ?? currentElement.codename} (${currentElement.type})`}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          </div>
+          {loaded && customElementContext && newItem && totalTime && (
+            <>
+              <div className={styles.row}>
+                <div className={styles.fullWidthCell}>
+                  <label className='content-item-element__label'>{elementTerms.newItem}</label>
+                  <p>
+                    <a
+                      href={`https://app.kontent.ai/${customElementContext.projectId}/content-inventory/${customElementContext.variant.id}/content/${newItem.id}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                    >
+                      {newItem.name}
+                    </a>
+                  </p>
+                </div>
+                <div className={styles.fullWidthCell}>
+                  <label className='content-item-element__label'>{elementTerms.totalTime}</label>
+                  <p>{getTotalTimeString}</p>
+                </div>
+                <div className={styles.fullWidthCell}>
+                  <label className='content-item-element__label'>{elementTerms.totalApiCalls}</label>
+                  <p>{totalApiCalls}</p>
+                </div>
+              </div>
+              {updatedItems.length > 0 && (
+                <div className={styles.row}>
+                  <div className={styles.fullWidthCell}>
+                    <label className='content-item-element__label'>{elementTerms.updatedItems}</label>
+                    {updatedItems.map((item) => (
+                      <p key={item.id}>
                         <a
-                          href={`https://app.kontent.ai/${customElementContext.projectId}/content-inventory/${customElementContext.variant.id}/content/${newItem.id}`}
+                          href={`https://app.kontent.ai/${customElementContext.projectId}/content-inventory/${customElementContext.variant.id}/content/${item.id}`}
                           target='_blank'
                           rel='noopener noreferrer'
                         >
-                          {newItem.name}
+                          {item.name}
                         </a>
                       </p>
-                    </div>
-                    <div className={styles.fullWidthCell}>
-                      <label className='content-item-element__label'>{elementTerms.totalTime}</label>
-                      <p>{getTotalTimeString}</p>
-                    </div>
-                    <div className={styles.fullWidthCell}>
-                      <label className='content-item-element__label'>{elementTerms.totalApiCalls}</label>
-                      <p>{totalApiCalls}</p>
-                    </div>
+                    ))}
                   </div>
-                  {updatedItems.length > 0 && (
-                    <div className={styles.row}>
-                      <div className={styles.fullWidthCell}>
-                        <label className='content-item-element__label'>{elementTerms.updatedItems}</label>
-                        {updatedItems.map((item) => (
-                          <p key={item.id}>
-                            <a
-                              href={`https://app.kontent.ai/${customElementContext.projectId}/content-inventory/${customElementContext.variant.id}/content/${item.id}`}
-                              target='_blank'
-                              rel='noopener noreferrer'
-                            >
-                              {item.name}
-                            </a>
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
+                </div>
               )}
             </>
           )}
-          {error === undefined && !enabled && (
-            <div className='content-item-element__guidelines'>
-              <p>{elementTerms.disabledDescription}</p>
-            </div>
-          )}
+        </>
+      )}
+      {error === undefined && !enabled && (
+        <div className='content-item-element__guidelines'>
+          <p>{elementTerms.disabledDescription}</p>
         </div>
       )}
     </div>
