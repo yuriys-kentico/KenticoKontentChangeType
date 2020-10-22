@@ -1,5 +1,5 @@
 import moment, { Duration } from 'moment';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useAsyncEffect } from 'use-async-effect';
 import wretch from 'wretch';
 
